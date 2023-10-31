@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Ubuntu", sans-serif;
+        }
+        
+        body {
+            height: 100vh;
+        }
+        
+        .heading {
+            padding: 20px;
+            text-align: center;
+            background: #04AA6D;
+            color: white;
+            font-size: 50px;
+        }
+        
+        .mainContainer {
+            border-radius: 5px;
+            background-color: #f2f2f2;
+            padding: 20px;
+        }
+        
+        .col-25 {
+            float: left;
+            width: 25%;
+            margin-top: 6px;
+        }
+        
+        .col-75 {
+            float: left;
+            width: 75%;
+            margin-top: 6px;
+        }
+        
+        .label {
+            padding: 12px 12px 12px 0;
+            display: inline-block;
+        }
+        
+        .row::after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+        
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: vertical;
+        }
+        
+        input:focus {
+            border: 1px solid #9c9dde;
+        }
+        
+        button {
+            background-color: #04AA6D;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            float: right;
+            margin-top: 25px;
+            margin-bottom: 25px;
+        }
+        
+        button:hover {
+            background-color: #45a049;
+        }
+        
+        .url-generated {
+            background-color: #f0f0f0;
+            padding: 10px;
+            color: #0944e8;
+            cursor: pointer;
+        }
+        
+        #values {
+            font-family: Arial, Helvetica, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+        
+        #values td,
+        #values th {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        
+        #values tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        
+        #values tr:hover {
+            background-color: #ddd;
+        }
+        
+        #values th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+            background-color: #04AA6D;
+            color: white;
+        }
+        
+        #values td {
+            max-width: 150px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        table,
+        th,
+        td {
+            border: 1px solid;
+        }
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page</title>
+</head>
+
+<body>
+    <h1 class="heading">URL Shorterner</h1>
+
+    <div class="mainContainer">
+        <div>
+            <form method="post" action="/url">
+                <div class="row">
+                    <div class="col-25">
+                        <label>Enter Your Original Url</label>
+                    </div>
+                    <div class="col-75">
+                        <input type="text" name="url" placeholder="https://example.com">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <button type="submit">Generate</button>
+                </div>
+            </form>
+        </div>
+        <div>
+            <% if (locals.id) { %>
+                <p>Url Generated: </p>
+                <pre class="url-generated" id="copyText">http://localhost:8001/url/<%=id%></pre>
+                <% } %>
+        </div>
+        <div>
+            <% if (locals.urls) { %>
+                <table id="values">
+                    <thead>
+                        <th>S.No.</th>
+                        <th>Short Id</th>
+                        <th>Redirect</th>
+                        <th>Clicks</th>
+                    </thead>
+                    <tbody>
+                        <% locals.urls.forEach((url, index) => { %>
+                            <tr>
+                                <td>
+                                    <%= index + 1 %>
+                                </td>
+                                <td>
+                                    <%= url.shortId %>
+                                </td>
+                                <td>
+                                    <%= url.redirectUrl %>
+                                </td>
+                                <td>
+                                    <%= url.visitHistory.length %>
+                                </td>
+                            </tr>
+                            <% }) %>
+                    </tbody>
+                </table>
+                <% } %>
+        </div>
+    </div>
+    <script>
+        document.getElementById('copyText').addEventListener('click', function() {
+            // Select the text content within the pre tag
+            const textArea = document.createElement('textarea');
+            textArea.value = this.textContent;
+            document.body.appendChild(textArea);
+
+            // Copy the text to the clipboard
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            alert('Copied to clipboard');
+        });
+    </script>
+</body>
+
+</html>
